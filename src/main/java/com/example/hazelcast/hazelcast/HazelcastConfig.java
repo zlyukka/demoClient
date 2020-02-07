@@ -5,6 +5,10 @@ import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.client.config.ClientConnectionStrategyConfig;
 import com.hazelcast.client.config.ClientNetworkConfig;
 import com.hazelcast.client.config.ConnectionRetryConfig;
+import com.hazelcast.config.EvictionConfig;
+import com.hazelcast.config.EvictionPolicy;
+import com.hazelcast.config.InMemoryFormat;
+import com.hazelcast.config.NearCacheConfig;
 import com.hazelcast.core.HazelcastInstance;
 import org.apache.el.stream.Optional;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -48,6 +52,18 @@ public class HazelcastConfig {
                 .setConnectionTimeout(externalHazelcastProperties.getConnectionTimeout())
                 .setConnectionAttemptLimit(externalHazelcastProperties.getConnectionAttemptLimit());
 
+        EvictionConfig evictionConfig = new EvictionConfig()
+                .setEvictionPolicy(EvictionPolicy.LFU)
+                .setMaximumSizePolicy(EvictionConfig.MaxSizePolicy.ENTRY_COUNT)
+                .setSize(50000);
+
+        NearCacheConfig nearCacheConfig = new NearCacheConfig()
+                .setName("user")
+                .setInMemoryFormat(InMemoryFormat.OBJECT)
+                .setInvalidateOnChange(true)
+                .setEvictionConfig(evictionConfig);
+
+        clientConfig.addNearCacheConfig(nearCacheConfig);
         return clientConfig;
     }
 

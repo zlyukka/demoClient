@@ -16,10 +16,11 @@ import java.util.stream.Collectors;
  */
 @Service
 public class UserCacheServiceImpl implements UserCacheService{
-    private ConcurrentHashMap<Long, User> userConcurrentHashMap = new ConcurrentHashMap<>();
-    ReplicatedMap<Long, User> userReplicatedMap;
+    private final ConcurrentHashMap<Long, User> userConcurrentHashMap;
+    private ReplicatedMap<Long, User> userReplicatedMap;
 
     public UserCacheServiceImpl(HazelcastInstance hazelcastInstance){
+        userConcurrentHashMap = new ConcurrentHashMap<>();
         userReplicatedMap = hazelcastInstance.getReplicatedMap("userReplicated");
         userReplicatedMap.addEntryListener(new HazelcastEntryListener(userConcurrentHashMap));
         userConcurrentHashMap.putAll(userReplicatedMap);

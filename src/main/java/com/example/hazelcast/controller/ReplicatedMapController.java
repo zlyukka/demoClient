@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/replicatedMap")
 public class ReplicatedMapController {
 
-    UserCacheService userService;
+    private UserCacheService userService;
 
     public ReplicatedMapController(UserCacheService userService){
         this.userService = userService;
